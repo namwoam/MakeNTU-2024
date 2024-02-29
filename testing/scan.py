@@ -7,15 +7,15 @@ reader = easyocr.Reader(['ch_sim', 'en'])
 
 
 def scan(file_path: str):
-    result = reader.readtext(file_path)
-    df = pd.DataFrame(result, columns=["coords",  "content", "conf"])
+    result = reader.readtext(file_path, paragraph=True)
+    df = pd.DataFrame(result, columns=["coords",  "content"])
     return df
 
 
 def extract(df: DataFrame):
-    clean_df = df[df["conf"] > 0.6]
+    # clean_df = df[df["conf"] > 0.6]
     # print(len(clean_df))
-    return " ".join(clean_df["content"].values.tolist())
+    return "\n".join(df["content"].values.tolist())
 
 
 if __name__ == "__main__":

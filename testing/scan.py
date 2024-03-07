@@ -22,4 +22,5 @@ if __name__ == "__main__":
     scan_result = scan(os.path.join(os.path.dirname(
         __file__), "2212.10156.pdf_page_15.png"))
     text = extract(scan_result)
-    print(text)
+    with open(os.path.join(os.path.dirname(__file__), "dream.txt"), "w") as f:
+        f.write(text)

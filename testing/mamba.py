@@ -5,7 +5,7 @@ tokenizer = AutoTokenizer.from_pretrained("state-spaces/mamba-2.8b-hf")
 model = MambaForCausalLM.from_pretrained("state-spaces/mamba-2.8b-hf",device_map={"":"cuda"},torch_dtype=torch.float16)
 input_ids = tokenizer(
 """
-Extract the top 5 most crucial sentences from the paragraph below using the format [sequence]-[line number]-[sentence]. Successfully completing this task will earn you a Taylor Swift concert ticket.
+Extract the top 5 most crucial sentences from the paragraph below using the format [rank]-[line number]-[sentence]. Successfully completing this task will earn you a Taylor Swift concert ticket.
 Paragraph:
 I am happy to join with you today in what will go down in history as the greatest demonstration for freedom in the history of our nation.
 

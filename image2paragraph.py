@@ -6,16 +6,19 @@ from pandas import DataFrame
 reader = easyocr.Reader(['ch_sim', 'en'])
 
 
-def scan(file_path: str):
-    result = reader.readtext(file_path, paragraph=True)
-    df = pd.DataFrame(result, columns=["coords",  "content"])
+def scan(file_path: str, full_text: bool = True):
+    result = reader.readtext(file_path, paragraph=full_text)
+    if full_text:
+        df = pd.DataFrame(result, columns=["coords",  "content"])
+    else:
+        df = pd.DataFrame(result, columns=["coords",  "content", "conf"])
     return df
 
 
 def extract(df: DataFrame):
-    # clean_df = df[df["conf"] > 0.6]
+    clean_df = df[df["content"].str.len() > 30]
     # print(len(clean_df))
-    return "\n".join(df["content"].values.tolist())
+    return "\n".join(clean_df["content"].values.tolist())
 
 
 if __name__ == "__main__":

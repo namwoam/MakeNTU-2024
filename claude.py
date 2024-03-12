@@ -27,6 +27,16 @@ def extract(article: str):
     )
     return respond.content[0].text
 
+def clean(raw_respond:str):
+    rows = raw_respond.split("\n")
+    result = []
+    for row in rows:
+        row_seg = row.split("-")
+        row_result = "-".join(row_seg[2:])
+        if len(row_result)>10:
+            result.append(row_result)
+    return result
+
 
 if __name__ == "__main__":
     with open(os.path.join(os.path.dirname(__file__), "dream.txt")) as f:

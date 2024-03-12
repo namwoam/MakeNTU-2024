@@ -1,0 +1,5 @@
+The pursuit of general purpose AI systems has lead to the development of capable end-to-end trainable models [1,5,8,13,19,25,27], many Of which aspire to provide simple natural language interface for a user to interact with the model。
+Imagine instructing 8 Vision system tO Tag the 7 main characters on the TV show Big Bang Theory in this image.
+We introduce VISPROG Which inputs visual data (a sin- gle image Or a set of images) along with a natural language instruction, generates sequence Of steps, visual pro- gram 让 you will, and then executes these steps tO produce the desired output。
+VISPROG improves upon previous methods for gener ating and executing programs for vision applications。
+To demonstrate ils flexibility, we use VISPROG for 4 dif- ferent tasks that share some common skills (e.8一 for j- age parsing) While also requiring some degree Of special- ized reasoning and visual manipulation capabilities。

@@ -1,5 +1,6 @@
-import pylcs
 from pandas import DataFrame
+import numpy as np
+import pandas as pd
 
 threshold = 0.6
 
@@ -39,3 +40,39 @@ def reconstruct(df: DataFrame, sentences: list[str]):
                 print("lwcs:", lwcs, "s1:", text, "s2:", sentences[k])
                 break
     return result_df
+
+
+def refine(df: DataFrame, sentences: list[str]):
+    result_df = df.copy()
+    for k in range(len(sentences)):
+        py_fragments = []
+        for row in range(len(df)):
+            if result_df.at[row, "flag"] == k:
+                x_center = (result_df.at[row, "x1"]+result_df.at[row, "y1"])/2
+                y_center = (result_df.at[row, "x2"]+result_df.at[row, "y2"])/2
+                mass = abs((result_df.at[row, "x1"] - result_df.at[row, "x2"])
+                           * (result_df.at[row, "y1"] - result_df.at[row, "y2"]))
+                py_fragments.append((row, x_center, y_center, mass))
+        fragments = np.array(py_fragments)
+        # print(fragments.shape)
+        x_com = np.average(fragments[:, 1], weights=fragments[:, 3])
+        y_com = np.average(fragments[:, 2], weights=fragments[:, 3])
+        dist = np.sqrt((fragments[:, 1] - x_com) **
+                       2 + (fragments[:, 2] - y_com)**2)
+        std = np.std(dist)
+        # print(dist)
+        # print(std)
+        for i,  el in enumerate(py_fragments):
+            if dist[i] > 2.5*std:
+                result_df.at[el[0], "flag"] = -1
+    # x_center , y_center =
+    return result_df
+
+
+if __name__ == "__main__":
+    markers = pd.read_csv("./markers.csv", index_col=0)
+    sentences = []
+    with open("./claude_sentences.txt", "r") as reader:
+        sentences = reader.read().split("\n")[:-1]
+    markers = refine(markers, sentences)
+    markers.to_csv("./refined_markers.csv")

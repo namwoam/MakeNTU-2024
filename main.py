@@ -1,18 +1,20 @@
-import image2paragraph
+import ocr
 import claude
 import reconstruct_pos
 import os
+import cv2
+import visualize
 
 
 def main():
     # use opencv to take picture
     picture_path = os.path.join(os.path.dirname(
         __file__), "2211.11559.pdf_page_2.png")
-    paragraph = image2paragraph.scan(picture_path)
+    paragraph = ocr.scan(picture_path)
     paragraph.to_csv("./paragraph.csv")
-    fragment = image2paragraph.scan(picture_path, False)
+    fragment = ocr.scan(picture_path, False)
     fragment.to_csv("./fragment.csv")
-    content = image2paragraph.extract(paragraph)
+    content = ocr.extract(paragraph)
     with open(os.path.join(os.path.dirname(__file__), "content.txt"), "w") as writer:
         writer.write(content)
     claude_result = claude.extract(content)
@@ -23,6 +25,11 @@ def main():
         writer.writelines(sentence + '\n' for sentence in sentences)
     markers = reconstruct_pos.reconstruct(fragment, sentences)
     markers.to_csv("./markers.csv")
+    markers = reconstruct_pos.refine(markers, sentences)
+    image = cv2.imread(os.path.join(os.path.dirname(
+        __file__), "2211.11559.pdf_page_2.png"))
+    visualize.highlight_image(image, markers)
+    cv2.imwrite("highlighted.png", image)
 
 
 if __name__ == "__main__":
